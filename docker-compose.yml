@@ -28,7 +28,6 @@ services:
     build:
       context: ./services/postgres
       dockerfile: Dockerfile
-    user: "1000:50"
     restart: always
     networks:
       - backnet
@@ -69,6 +68,27 @@ services:
           condition: service_healthy
     networks:
       - backnet
+
+  email_transmitter:
+    image: ecorrouge/email-transmitter:latest
+    container_name: rococo_sample_email_transmitter
+    restart: unless-stopped
+    networks:
+      - backnet
+    env_file:
+      - ./.env.secrets
+      - ./${APP_ENV}.env
+    environment:
+      - MESSAGING_TYPE=RabbitMqConnection
+      - PROCESSOR_TYPE=EmailServiceProcessor
+      - PROCESSOR_MODULE=services.email_transmitter.src.email_processor
+      - CONFIG_FILEPATH=/app/src/services/email_transmitter/src/config.json
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./services/email_transmitter/config.json:/app/src/services/email_transmitter/src/config.json
+
 
 volumes:
   rococo-sample-postgres-data:

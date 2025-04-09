@@ -13,7 +13,7 @@ flask-cors = "^5.0.1"
 pydantic = "^2.10.6"
 pydantic-settings = "^2.8.1"
 rollbar = "^1.2.0"
-rococo = "^1.0.31"
+rococo = "^1.0.33"
 pyjwt = "^2.10.1"
 pika = "^1.3.2"
 
