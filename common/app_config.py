@@ -18,7 +18,7 @@ class BaseConfig(BaseSettings):
 class Config(BaseConfig):
     DEBUG: bool = Field(env='DEBUG', default=False)
     TESTING: bool = Field(env='TESTING', default=False)
-    LOGLEVEL: str = Field(env='LOGLEVEL', default='INFO')
+    LOG_LEVEL: str = Field(env='LOG_LEVEL', default='INFO')
 
     ACCESS_TOKEN_EXPIRE: int = Field(env='ACCESS_TOKEN_EXPIRE', default=3600)
     RESET_TOKEN_EXPIRE: int = Field(env='ACCESS_TOKEN_EXPIRE', default=60*60*24*3)  # 3 days
@@ -48,6 +48,9 @@ class Config(BaseConfig):
 
     QUEUE_NAME_PREFIX: str = Field(env='QUEUE_NAME_PREFIX', default='')
     EMAIL_SERVICE_PROCESSOR_QUEUE_NAME: str = Field(env='EmailServiceProcessor_QUEUE_NAME', default='email-transmitter')
+
+    # CORS Configuration
+    CORS_ORIGINS: str = Field(env='CORS_ORIGINS', default='http://localhost:9000')
 
     @property
     def DEFAULT_USER_PASSWORD(self):
