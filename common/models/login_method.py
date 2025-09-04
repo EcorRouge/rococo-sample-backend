@@ -51,3 +51,15 @@ class LoginMethod(BaseLoginMethod):
         if errors:
             raise ModelValidationError(errors)
 
+    @property
+    def is_oauth_method(self) -> bool:
+        """Check if this is an OAuth login method"""
+        return self.method_type and self.method_type.startswith('oauth-')
+
+    @property
+    def oauth_provider_name(self) -> Optional[str]:
+        """Get the OAuth provider name from method_type"""
+        if self.is_oauth_method:
+            return self.method_type.replace('oauth-', '')
+        return None
+

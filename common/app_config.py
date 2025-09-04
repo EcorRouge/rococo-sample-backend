@@ -44,10 +44,16 @@ class Config(BaseConfig):
 
     AUTH_JWT_SECRET: str = Field(env='AUTH_JWT_SECRET')
 
-    ROLLBAR_ACCESS_TOKEN: str = Field(env='ROLLBAR_ACCESS_TOKEN', default=None)
+    ROLLBAR_ACCESS_TOKEN: str = Field(env='ROLLBAR_ACCESS_TOKEN', default="")
 
     QUEUE_NAME_PREFIX: str = Field(env='QUEUE_NAME_PREFIX', default='')
     EMAIL_SERVICE_PROCESSOR_QUEUE_NAME: str = Field(env='EmailServiceProcessor_QUEUE_NAME', default='email-transmitter')
+
+    # OAuth Configuration
+    GOOGLE_CLIENT_ID: str = Field(env='GOOGLE_CLIENT_ID', default="")
+    GOOGLE_CLIENT_SECRET: str = Field(env='GOOGLE_CLIENT_SECRET', default="")
+    MICROSOFT_CLIENT_ID: str = Field(env='MICROSOFT_CLIENT_ID', default="")
+    MICROSOFT_CLIENT_SECRET: str = Field(env='MICROSOFT_CLIENT_SECRET', default="")
 
     @property
     def DEFAULT_USER_PASSWORD(self):
