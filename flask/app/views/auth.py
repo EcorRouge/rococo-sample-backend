@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource
 from flask import request
 from app.helpers.response import get_success_response, get_failure_response, parse_request_body, validate_required_fields
+from app.helpers.decorators import login_required
 from common.app_config import config
 from common.services import AuthService, PersonService, OAuthClient
 
@@ -171,3 +172,31 @@ class OAuthExchange(Resource):
 
         except Exception as e:
             return get_failure_response(message=f"OAuth authentication failed: {str(e)}")
+
+
+@auth_api.route('/logout')
+class Logout(Resource):
+    @login_required()
+    def post(self, person):
+        """
+        Logout user - log the event and return success
+        
+        Args:
+            person: Current authenticated user (injected by login_required decorator)
+        """
+        try:
+            # Log the logout attempt
+            if person and hasattr(person, 'first_name') and hasattr(person, 'last_name'):
+                print(f"User {person.first_name} {person.last_name} (ID: {person.entity_id}) logged out")
+            else:
+                print("User logged out (person details not available)")
+            
+            # Note: Frontend will clear local data and redirect
+            # JWT tokens will naturally expire based on their expiry time
+            
+            return get_success_response(message="Logged out successfully")
+            
+        except Exception as e:
+            # Even if there's an error, return success to not block frontend logout
+            print(f"Logout endpoint error (non-blocking): {e}")
+            return get_success_response(message="Logged out successfully")
