@@ -1,6 +1,5 @@
 from common.repositories.factory import RepositoryFactory, RepoType
 from common.models import LoginMethod
-from common.models.login_method import LoginMethodType
 
 
 class LoginMethodService:
@@ -15,7 +14,7 @@ class LoginMethodService:
         return login_method
 
     def get_login_method_by_email_id(self, email_id: str):
-        login_method = self.login_method_repo.get_one({"email_id": email_id, "method_type": LoginMethodType.EMAIL_PASSWORD})
+        login_method = self.login_method_repo.get_one({"email_id": email_id})
         return login_method
     
     def get_login_method_by_id(self, entity_id: str):

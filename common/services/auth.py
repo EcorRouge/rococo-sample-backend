@@ -40,7 +40,14 @@ class AuthService:
 
         existing_email = self.email_service.get_email_by_email_address(email)
         if existing_email:
-            raise InputValidationError("The email address you provided is already registered.")
+            # Check if this email is already registered with OAuth
+            existing_login_method = self.login_method_service.get_login_method_by_email_id(existing_email.entity_id)
+            
+            if existing_login_method and existing_login_method.is_oauth_method:
+                provider_name = existing_login_method.oauth_provider_name or "OAuth provider"
+                raise InputValidationError(f"This email address is already registered with {provider_name}. Please use the {provider_name} sign-in option instead of creating a new account.")
+            else:
+                raise InputValidationError("The email address you provided is already registered.")
 
         person = Person(first_name=first_name, last_name=last_name)
 
@@ -108,6 +115,18 @@ class AuthService:
             raise InputValidationError("Email is not registered.")
         
         login_method = self.login_method_service.get_login_method_by_email_id(email_obj.entity_id)
+        
+        if not login_method:
+            raise InputValidationError("Login method not found for this email.")
+        
+        # Check if this is an OAuth account
+        if login_method.is_oauth_method:
+            provider_name = login_method.oauth_provider_name or "OAuth provider"
+            raise InputValidationError(f"This account was created using {provider_name}. Please use the {provider_name} sign-in option instead of email/password.")
+        
+        # Check if password is None (shouldn't happen for email/password accounts, but safety check)
+        if not login_method.password:
+            raise InputValidationError("This account does not have a password set. Please use the appropriate sign-in method.")
 
         if not check_password_hash(login_method.password, password):
             raise InputValidationError('Incorrect email or password.')
