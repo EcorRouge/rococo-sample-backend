@@ -16,7 +16,7 @@ rollbar = "^1.2.0"
 rococo = "^1.0.33"
 pyjwt = "^2.10.1"
 pika = "^1.3.2"
-
+requests = "^2.31.0"
 
 [build-system]
 requires = ["poetry-core"]

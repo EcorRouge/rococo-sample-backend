@@ -6,7 +6,7 @@ services:
       context: ./services/rabbitmq
       dockerfile: Dockerfile
     volumes:
-      - rococo-sample-rabbitmq-data:/var/lib/rabbitmq/mnesia/
+      - rococo-sample-rabbitmq-data:/var/lib/rabbitmq
     networks:
         - backnet
     env_file:

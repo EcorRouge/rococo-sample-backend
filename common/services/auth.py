@@ -121,6 +121,110 @@ class AuthService:
 
         return access_token, expiry
 
+    def login_user_by_oauth(self, email: str, first_name: str, last_name: str, provider: str, provider_data: dict, person_id: str = None):
+        """
+        Login or create user via OAuth provider
+        
+        Args:
+            email: User's email from OAuth provider
+            first_name: User's first name
+            last_name: User's last name
+            provider: OAuth provider name (google, microsoft)
+            provider_data: Raw data from OAuth provider
+            person_id: Optional person ID if user already exists
+            
+        Returns:
+            tuple: (access_token, expiry, person)
+        """
+        # Check if user already exists
+        existing_email = self.email_service.get_email_by_email_address(email)
+        
+        if existing_email:
+            # User exists, get their login method and person
+            login_method = self.login_method_service.get_login_method_by_email_id(existing_email.entity_id)
+            
+            # Get person from email's person_id (more reliable)
+            person = self.person_service.get_person_by_id(existing_email.person_id)
+            
+            if not person:
+                raise APIException("Person not found for existing email.")
+            
+            # If no login method exists, create one (this can happen if there was a data inconsistency)
+            if not login_method:
+                # Create OAuth login method for existing user
+                login_method = LoginMethod(
+                    method_type=f"oauth-{provider}",
+                    raw_password="TempPassword123!"  # Temporary password that will be cleared
+                )
+                login_method.person_id = person.entity_id
+                login_method.email_id = existing_email.entity_id
+                login_method.method_data = provider_data
+                login_method.password = None  # OAuth users don't need passwords
+                
+                # Save the new login method
+                login_method = self.login_method_service.save_login_method(login_method)
+                print(f"Created missing login method for existing user: {email}")
+            else:
+                # Update existing login method to include OAuth info if needed
+                if not login_method.is_oauth_method:
+                    login_method.method_type = f"oauth-{provider}"
+                    login_method.method_data = provider_data
+                    # For OAuth methods, ensure password is None
+                    login_method.password = None
+                    self.login_method_service.save_login_method(login_method)
+            
+            # Ensure email is verified for OAuth users
+            if not existing_email.is_verified:
+                existing_email = self.email_service.verify_email(existing_email)
+            
+            # Generate access token
+            access_token, expiry = generate_access_token(login_method, person=person, email=existing_email)
+            return access_token, expiry, person
+        else:
+            # Create new user
+            person = Person(first_name=first_name, last_name=last_name)
+            if person_id:
+                person.entity_id = person_id
+            
+            # Create email (verified for OAuth users)
+            email_obj = Email(person_id=person.entity_id, email=email, is_verified=True)
+            
+            # Create OAuth login method - we need to handle this differently since raw_password is required
+            # For OAuth users, we'll create with a temporary password then clear it
+            temp_login_method = LoginMethod(
+                method_type=f"oauth-{provider}",
+                raw_password="TempPassword123!"  # Temporary password that will be cleared
+            )
+            temp_login_method.person_id = person.entity_id
+            temp_login_method.email_id = email_obj.entity_id
+            temp_login_method.method_data = provider_data
+            
+            # Clear the password after hashing (since OAuth users don't need passwords)
+            temp_login_method.password = None
+            
+            # Create organization
+            organization = Organization(
+                name=f"{first_name}'s Organization"
+            )
+            
+            # Create person-organization role
+            person_organization_role = PersonOrganizationRole(
+                person_id=person.entity_id,
+                organization_id=organization.entity_id,
+                role="admin"
+            )
+            
+            # Save everything
+            email_obj = self.email_service.save_email(email_obj)
+            person = self.person_service.save_person(person)
+            login_method = self.login_method_service.save_login_method(temp_login_method)
+            self.organization_service.save_organization(organization)
+            self.person_organization_role_service.save_person_organization_role(person_organization_role)
+            
+            # Generate access token
+            access_token, expiry = generate_access_token(login_method, person=person, email=email_obj)
+            return access_token, expiry, person
+
     @staticmethod
     def parse_reset_password_token(token, login_method: LoginMethod):
         try:
