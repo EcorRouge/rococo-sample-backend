@@ -28,3 +28,8 @@ class PersonService:
     def get_person_by_id(self, entity_id: str):
         person = self.person_repo.get_one({"entity_id": entity_id})
         return person
+
+    def update_person_name(self, person: Person, first_name: str, last_name: str):
+        person.first_name = first_name
+        person.last_name = last_name
+        return self.save_person(person)
