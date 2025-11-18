@@ -263,7 +263,7 @@ class AuthService:
         if not person:
             raise APIException("Person does not exist.")
 
-        login_method = self.login_method_service.get_login_method_by_email_id(email.entity_id)
+        login_method = self.login_method_service.get_login_method_by_email_id(email_obj.entity_id)
         if not login_method:
             raise APIException("Login method does not exist.")
 
@@ -305,6 +305,10 @@ class AuthService:
         person_obj = self.person_service.get_person_by_id(parsed_token['person_id'])
         if not person_obj:
             raise APIException("Person with email not found.")
+
+        # I want to check if new password is the same as current password
+        if check_password_hash(login_method.password, password):
+            raise APIException("New password must be different from your current password.")
 
         login_method = self.login_method_service.update_password(login_method, new_login_method.password)
 
