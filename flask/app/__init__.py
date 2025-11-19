@@ -37,10 +37,19 @@ def create_app():
     from app.views import initialize_views
     initialize_views(api)
 
+    # Add CORS support first to handle OPTIONS requests before any redirects
+    CORS(app, 
+         resources={r"/*": {
+             "origins": "*", 
+             "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+             "allow_headers": ["Content-Type", "Authorization"],
+             "supports_credentials": False
+         }},
+         supports_credentials=False,
+         automatic_options=True)
+    
+    # Initialize API after CORS
     api.init_app(app)
-
-    # Add simple CORS support
-    CORS(app)
 
     PooledConnectionPlugin(app, database_type="postgres")
 
