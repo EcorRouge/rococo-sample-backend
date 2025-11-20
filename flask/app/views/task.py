@@ -13,7 +13,6 @@ task_api = Namespace('tasks', description="Task-related APIs")
 class Tasks(Resource):
     @login_required()
     def get(self, person):
-        # Get filter query param: ?filter=all|active|completed
         filter_type = request.args.get('filter', 'all')
         task_service = TaskService(config)
         
@@ -33,7 +32,6 @@ class Tasks(Resource):
             validate_required_fields(parsed_body)
             
             task_service = TaskService(config)
-            # Create task with keyword arguments (now that it's a dataclass)
             task = Task(
                 person_id=person.entity_id,
                 title=parsed_body['title'],

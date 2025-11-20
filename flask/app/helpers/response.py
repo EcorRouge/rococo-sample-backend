@@ -12,7 +12,11 @@ def parse_request_body(request, keys, default_value=None):
 
 def validate_required_fields(required_fields):
     for field, value in required_fields.items():
-        if not value or not str(value).strip():
+        if value is None:
+            raise InputValidationError(f"'{field}' is required and cannot be empty.")
+        if isinstance(value, str) and not value.strip():
+            raise InputValidationError(f"'{field}' is required and cannot be empty.")
+        if not isinstance(value, (bool, int, float, str)) and not value:
             raise InputValidationError(f"'{field}' is required and cannot be empty.")
 
 
