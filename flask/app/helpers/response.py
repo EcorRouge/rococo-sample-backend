@@ -26,10 +26,10 @@ def _get_response(data, status_code=200):
 
 
 def get_failure_response(message, status_code=200):
-    response = _get_response(dict(success=False, message=message), status_code)
+    response = _get_response({"success": False, "message": message}, status_code)
     return response
 
 
 def get_success_response(status_code=200, **data):
-    response = _get_response(dict(success=True, **data), status_code)
+    response = _get_response({"success": True, **data}, status_code)
     return response

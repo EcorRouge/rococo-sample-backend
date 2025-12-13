@@ -4,15 +4,19 @@ WORKDIR /api
 
 ENV PIP_ROOT_USER_ACTION=ignore
 
-RUN python -m pip install --upgrade pip
+# Pin Poetry version for reproducibility and security
+ENV POETRY_VERSION=1.7.1
+ENV POETRY_HOME=/opt/poetry
+ENV PATH="$POETRY_HOME/bin:$PATH"
 
-# Install Poetry
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
-
-RUN poetry --version
+# Upgrade pip and install Poetry securely
+# Download installer first instead of piping curl directly to shell
+RUN python -m pip install --upgrade pip && \
+    curl --proto =https -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
+    python /tmp/install-poetry.py --version ${POETRY_VERSION} && \
+    rm /tmp/install-poetry.py && \
+    poetry config virtualenvs.create false && \
+    poetry --version
 
 COPY ./flask/pyproject.toml ./flask/poetry.lock ./
 
@@ -26,7 +30,14 @@ COPY ./common /api/common
 
 ENV PYTHONPATH /api
 
-RUN chmod +x /api/docker-entrypoint.sh
+# Create non-root user for security and set permissions
+RUN groupadd --gid 1000 appgroup && \
+    useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser && \
+    chown -R appuser:appgroup /api && \
+    chmod +x /api/docker-entrypoint.sh
+
+# Switch to non-root user
+USER appuser
 
 # Run app.py when the container launches
 ENV FLASK_APP app.py

@@ -1,4 +1,4 @@
 FROM postgres:17
 
-ADD dbVersion.sql /docker-entrypoint-initdb.d
-ADD postgresql.conf /etc/postgresql/
+COPY dbVersion.sql /docker-entrypoint-initdb.d
+COPY postgresql.conf /etc/postgresql/

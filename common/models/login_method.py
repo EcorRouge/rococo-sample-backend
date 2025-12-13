@@ -37,15 +37,15 @@ class LoginMethod(BaseLoginMethod):
             errors.append("Password must be at least 8 character long")
         if len(self.raw_password) > 100:
             errors.append("Password must be at max 100 character long")
-        if not any(map(lambda x: x in unique_v, string.ascii_uppercase)):
+        if not any(x in unique_v for x in string.ascii_uppercase):
             errors.append("Password must contain a uppercase letter")
-        if not any(map(lambda x: x in unique_v, string.ascii_lowercase)):
+        if not any(x in unique_v for x in string.ascii_lowercase):
             errors.append("Password must contain a lowercase letter")
-        if not any(map(lambda x: x in unique_v, string.digits)):
+        if not any(x in unique_v for x in string.digits):
             errors.append("Password must contain a digit")
-        if not any(map(lambda x: x in unique_v, allowed_symbols)):
+        if not any(x in unique_v for x in allowed_symbols):
             errors.append("Password must contain a special character")
-        if not all(map(lambda x: x in whitelist, unique_v)):
+        if not all(x in whitelist for x in unique_v):
             errors.append("Password contains an invalid character")
 
         if errors:
@@ -54,7 +54,9 @@ class LoginMethod(BaseLoginMethod):
     @property
     def is_oauth_method(self) -> bool:
         """Check if this is an OAuth login method"""
-        return self.method_type and self.method_type.startswith('oauth-')
+        if not self.method_type:
+            return False
+        return self.method_type.startswith('oauth-')
 
     @property
     def oauth_provider_name(self) -> Optional[str]:

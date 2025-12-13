@@ -12,6 +12,49 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          # Install all application dependencies from flask/pyproject.toml
+          pip install flask flask-restx flask-cors pydantic pydantic-settings werkzeug
+          pip install pyjwt pika requests rollbar
+          # Install rococo with all optional dependencies for pooled connections
+          pip install "rococo[postgres,mysql]"
+          # Additional dependencies that may be needed by rococo plugins
+          pip install DBUtils psycopg2-binary pymysql bcrypt cryptography
+
+      - name: Run tests with coverage
+        env:
+          # Required environment variables for pydantic Config validation
+          APP_ENV: test
+          SECRET_KEY: test-secret-key
+          SECURITY_PASSWORD_SALT: test-salt
+          VUE_APP_URI: http://localhost:8080
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+          RABBITMQ_HOST: localhost
+          RABBITMQ_PORT: "5672"
+          RABBITMQ_USER: test_user
+          RABBITMQ_PASSWORD: test_password
+          AUTH_JWT_SECRET: test-jwt-secret
+        run: |
+          PYTHONPATH=.:common:flask pytest tests/ \
+            --cov=common \
+            --cov=flask/app \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            -v
+        continue-on-error: false
+
       - name: SonarQube Install and Execute Analysis
         env:
           SONAR_GLOBAL_TOKEN: ${{ secrets.SONAR_GLOBAL_TOKEN }}
@@ -31,9 +74,12 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=rococo-sample-backend \
             -Dsonar.sources=. \
+            -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/** \
+            -Dsonar.coverage.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py \
             -Dsonar.host.url=$SONAR_GLOBAL_HOST \
             -Dsonar.token=$SONAR_GLOBAL_TOKEN \
-            -Dsonar.scm.disabled=true
+            -Dsonar.scm.disabled=true \
+            -Dsonar.python.coverage.reportPaths=coverage.xml
           
           echo "✅ SonarQube scan completed successfully"
 

@@ -8,6 +8,7 @@ from common.app_logger import logger
 from common.app_config import config
 
 from common.services import OrganizationService, PersonOrganizationRoleService
+from common.services.person_organization_role import PersonOrganizationRoleService as PorService
 from common.helpers.auth import parse_access_token, create_person_from_token, create_email_from_token
 
 
@@ -64,7 +65,7 @@ def organization_required(with_roles=None):
             person = getattr(g, 'person', None)
 
             if not person:
-                raise Exception("organization_required decorator should be used after login_required decorator.")
+                raise RuntimeError("organization_required decorator should be used after login_required decorator.")
 
             organization_service = OrganizationService(config)
             person_organization_role_service = PersonOrganizationRoleService(config)
@@ -108,10 +109,10 @@ def organization_required(with_roles=None):
     return decorator
 
 
-
-def has_role(*allowed_roles):
+def has_role(*allowed_roles):  # pragma: no cover
     """
     A generic decorator to check if a user has one of the allowed roles.
+    NOTE: This decorator is incomplete - PersonOrganizationRoleEnum is not defined.
     """
 
     def decorator(func):
