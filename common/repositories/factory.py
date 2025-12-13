@@ -1,4 +1,10 @@
-from common.repositories import *
+from common.repositories import (
+    PersonRepository,
+    OrganizationRepository,
+    EmailRepository,
+    LoginMethodRepository,
+    PersonOrganizationRoleRepository
+)
 from enum import Enum, auto
 from rococo.data.postgresql import PostgreSQLAdapter
 from rococo.messaging.rabbitmq import RabbitMqConnection
