@@ -64,7 +64,7 @@ def organization_required(with_roles=None):
             person = getattr(g, 'person', None)
 
             if not person:
-                raise Exception("organization_required decorator should be used after login_required decorator.")
+                raise RuntimeError("organization_required decorator should be used after login_required decorator.")
 
             organization_service = OrganizationService(config)
             person_organization_role_service = PersonOrganizationRoleService(config)

@@ -4,15 +4,13 @@ WORKDIR /api
 
 ENV PIP_ROOT_USER_ACTION=ignore
 
-RUN python -m pip install --upgrade pip
-
-# Install Poetry
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
+RUN python -m pip install --upgrade pip && \
+    # Install Poetry
+    curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
     ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
-
-RUN poetry --version
+    poetry config virtualenvs.create false && \
+    poetry --version
 
 COPY ./flask/pyproject.toml ./flask/poetry.lock ./
 
