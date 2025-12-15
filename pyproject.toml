@@ -9,5 +9,6 @@ source = [
     "common/repositories/factory",
     "common/services/person_organization_role",
     "flask/app/helpers/decorators",
-    "flask/app/helpers/response"
+    "flask/app/helpers/response",
+    "common/utils/version"
 ]
