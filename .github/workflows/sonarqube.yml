@@ -48,11 +48,11 @@ jobs:
           AUTH_JWT_SECRET: test-jwt-secret
         run: |
           PYTHONPATH=.:common:flask pytest tests/ \
-            --cov=common/models/login_method \
-            --cov=common/repositories/factory \
-            --cov=common/services/person_organization_role \
-            --cov=flask/app/helpers/decorators \
-            --cov=flask/app/helpers/response \
+            --cov=common.models.login_method \
+            --cov=common.repositories.factory \
+            --cov=common.services.person_organization_role \
+            --cov=flask.app.helpers.decorators \
+            --cov=flask.app.helpers.response \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             -v
