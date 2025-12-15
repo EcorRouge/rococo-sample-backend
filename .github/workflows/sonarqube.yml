@@ -6,7 +6,6 @@ on:
       - main
       - ilyaskarim-ROC-95
 
-
 jobs:
   sonarqube-scan:
     runs-on: ubuntu-latest
