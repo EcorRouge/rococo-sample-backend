@@ -48,7 +48,7 @@ jobs:
           AUTH_JWT_SECRET: test-jwt-secret
         run: |
           PYTHONPATH=.:common:flask pytest tests/ \
-            --cov=. \
+            --cov \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             --cov-branch \
@@ -74,7 +74,7 @@ jobs:
           echo "Running SonarQube Analysis..."
           sonar-scanner \
             -Dsonar.projectKey=rococo-sample-backend \
-            -Dsonar.sources=. \
+            -Dsonar.sources=common/models,common/repositories,common/services,common/utils,flask/app/helpers \
             -Dsonar.tests=tests \
             -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/**,.coverage,coverage.xml \
             -Dsonar.coverage.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py \
