@@ -58,6 +58,21 @@ jobs:
             -v
         continue-on-error: false
 
+      - name: Verify coverage report generated
+        run: |
+          echo "Checking for coverage.xml..."
+          if [ -f coverage.xml ]; then
+            echo "✅ coverage.xml found"
+            ls -lh coverage.xml
+            echo "Coverage file preview:"
+            head -20 coverage.xml
+          else
+            echo "❌ ERROR: coverage.xml not found"
+            echo "Files in current directory:"
+            ls -la
+            exit 1
+          fi
+
       - name: SonarQube Install and Execute Analysis
         env:
           SONAR_GLOBAL_TOKEN: ${{ secrets.SONAR_GLOBAL_TOKEN }}
@@ -83,6 +98,7 @@ jobs:
             -Dsonar.token=$SONAR_GLOBAL_TOKEN \
             -Dsonar.scm.disabled=true \
             -Dsonar.python.version=3.11 \
+            -Dsonar.sourceEncoding=UTF-8 \
             -Dsonar.python.coverage.reportPaths=coverage.xml
           
           echo "✅ SonarQube scan completed successfully"
