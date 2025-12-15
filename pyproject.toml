@@ -1,0 +1,13 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "common", "flask"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = [
+    "common/models/login_method",
+    "common/repositories/factory",
+    "common/services/person_organization_role",
+    "flask/app/helpers/decorators",
+    "flask/app/helpers/response"
+]

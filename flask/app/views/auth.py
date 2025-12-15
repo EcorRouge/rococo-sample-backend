@@ -146,14 +146,9 @@ class OAuthExchange(Resource):
             else:
                 return get_failure_response(message=f"Unsupported provider: {provider}")
 
-            # Normalize name + email
-            if provider == "google":
-                email = user_info.get('email')
-                name = user_info.get('name', '')
-
-            elif provider == "microsoft":
-                email = user_info.get('email')
-                name = user_info.get('name', '')
+            # Normalize name + email (same structure for both google and microsoft)
+            email = user_info.get('email')
+            name = user_info.get('name', '')
 
             if not email:
                 return get_failure_response(message=f"{provider.capitalize()} user info does not contain email.")
