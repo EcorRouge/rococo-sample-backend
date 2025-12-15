@@ -78,7 +78,7 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=rococo-sample-backend \
             -Dsonar.sources=. \
-            -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/** \
+            -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/**,.coverage,coverage.xml \
             -Dsonar.coverage.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py \
             -Dsonar.host.url=$SONAR_GLOBAL_HOST \
             -Dsonar.token=$SONAR_GLOBAL_TOKEN \
