@@ -48,15 +48,13 @@ jobs:
           AUTH_JWT_SECRET: test-jwt-secret
         run: |
           PYTHONPATH=.:common:flask pytest tests/ \
-            --cov=common/models/login_method \
-            --cov=common/repositories/factory \
-            --cov=common/services/person_organization_role \
-            --cov=flask/app/helpers/decorators \
-            --cov=flask/app/helpers/response \
+            --cov \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
+            --cov-branch \
             -v
         continue-on-error: false
+
 
       - name: SonarQube Install and Execute Analysis
         env:
@@ -76,14 +74,15 @@ jobs:
           echo "Running SonarQube Analysis..."
           sonar-scanner \
             -Dsonar.projectKey=rococo-sample-backend \
-            -Dsonar.sources=. \
-            -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/** \
+            -Dsonar.sources=common/models,common/repositories,common/services,common/utils,flask/app/helpers \
+            -Dsonar.tests=tests \
+            -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/**,.coverage,coverage.xml \
             -Dsonar.coverage.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py \
             -Dsonar.host.url=$SONAR_GLOBAL_HOST \
             -Dsonar.token=$SONAR_GLOBAL_TOKEN \
             -Dsonar.scm.disabled=true \
             -Dsonar.python.version=3.11 \
+            -Dsonar.sourceEncoding=UTF-8 \
             -Dsonar.python.coverage.reportPaths=coverage.xml
           
           echo "✅ SonarQube scan completed successfully"
-
