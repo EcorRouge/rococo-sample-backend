@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "rococo-sample-flask"
+name = "quarterhorse-flask"
 version = "0.1.2"
-description = "Flask-based API for Rococo Sample backend"
+description = "Flask-based API for Quarterhorse backend"
 authors = ["Asim <asymlabs@gmail.com>, Axel <axelpcxs3@gmail.com>"]
 readme = "README.md"
 

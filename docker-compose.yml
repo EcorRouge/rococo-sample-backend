@@ -1,12 +1,12 @@
 services:
   rabbitmq:
-    image: rococo_sample_rabbitmq
-    container_name: rococo_sample_rabbitmq
+    image: quarterhorse_rabbitmq
+    container_name: quarterhorse_rabbitmq
     build:
       context: ./services/rabbitmq
       dockerfile: Dockerfile
     volumes:
-      - rococo-sample-rabbitmq-data:/var/lib/rabbitmq
+      - quarterhorse-rabbitmq-data:/var/lib/rabbitmq
     networks:
         - backnet
     env_file:
@@ -22,9 +22,9 @@ services:
         retries: 10
 
   postgres:
-    image: rococo_sample_postgres
+    image: quarterhorse_postgres
     platform: linux/amd64
-    container_name: rococo_sample_postgres
+    container_name: quarterhorse_postgres
     build:
       context: ./services/postgres
       dockerfile: Dockerfile
@@ -35,7 +35,7 @@ services:
       - .env.secrets
       - ${APP_ENV}.env
     volumes:
-        - rococo-sample-postgres-data:/var/lib/postgresql/data
+        - quarterhorse-postgres-data:/var/lib/postgresql/data
     ports:
         - "5432:5432"
     healthcheck:
@@ -48,8 +48,8 @@ services:
 
   api:
     restart: always
-    image: rococo_sample_api
-    container_name: rococo_sample_api
+    image: quarterhorse_api
+    container_name: quarterhorse_api
     build:
         context: .
         dockerfile: ./flask/Dockerfile
@@ -71,7 +71,7 @@ services:
 
   email_transmitter:
     image: ecorrouge/email-transmitter:latest
-    container_name: rococo_sample_email_transmitter
+    container_name: quarterhorse_email_transmitter
     restart: unless-stopped
     networks:
       - backnet
@@ -91,10 +91,10 @@ services:
 
 
 volumes:
-  rococo-sample-postgres-data:
-    name: rococo-sample-postgres-data
-  rococo-sample-rabbitmq-data:
-    name: rococo-sample-rabbitmq-data
+  quarterhorse-postgres-data:
+    name: quarterhorse-postgres-data
+  quarterhorse-rabbitmq-data:
+    name: quarterhorse-rabbitmq-data
     driver: local
 
 networks:

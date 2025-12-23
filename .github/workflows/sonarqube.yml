@@ -73,7 +73,7 @@ jobs:
           
           echo "Running SonarQube Analysis..."
           sonar-scanner \
-            -Dsonar.projectKey=rococo-sample-backend \
+            -Dsonar.projectKey=quarterhorse-backend \
             -Dsonar.sources=common/models,common/repositories,common/services,common/utils,flask/app/helpers \
             -Dsonar.tests=tests \
             -Dsonar.exclusions=tests/**,**/test_*.py,**/*_test.py,**/conftest.py,venv/**,.venv/**,.coverage,coverage.xml \
