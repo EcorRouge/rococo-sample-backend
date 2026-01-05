@@ -11,7 +11,7 @@ This project includes Claude Code configuration for AI-assisted development.
 
 ## Prerequisites
 
-* Claude Code must be installed on your system
+* Claude Code must be installed on your system, see -> https://code.claude.com/docs/en/setup
 * Replace the placeholder Anthropic API key in `.claude/anthropic_key.sh` with your real key
 * Make the file executable:
 
