@@ -3,21 +3,57 @@ A rococo-based backend for web apps
 
 ---
 
-## Claude Code Setup
-
-This project includes Claude Code configuration for AI-assisted development.
-
----
-
 ## Prerequisites
 
 * Claude Code must be installed. Refer to the [Claude Code setup guide](https://code.claude.com/docs/en/setup) for installation instructions.
-* Replace the placeholder Anthropic API key in `.claude/anthropic_key.sh` with your real key
-* Make the file executable:
 
-  ```bash
-  chmod +x .claude/anthropic_key.sh
-  ```
+---
+
+## Claude IDE Configuration
+
+### Setting Up Anthropic API Key
+
+To use Claude IDE features, configure your Anthropic API key in your **user profile directory** (not in the project). This avoids committing keys to the repository and works across all projects.
+
+**Step 1: Create or edit `~/.claude/settings.json`** in your home directory:
+
+- **macOS/Linux**: `~/.claude/settings.json` (e.g., `/Users/YourUsername/.claude/settings.json`)
+- **Windows**: `%USERPROFILE%\.claude\settings.json` (e.g., `C:\Users\YourUsername\.claude\settings.json`)
+
+**Step 2: Add this configuration** (replace with your actual API key):
+
+```json
+{
+  "apiKeyHelper": "echo sk-ant-your-actual-anthropic-api-key-here"
+}
+```
+
+**Example:**
+```json
+{
+  "apiKeyHelper": "echo sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+**Quick Setup Commands:**
+
+```bash
+# macOS/Linux
+mkdir -p ~/.claude
+nano ~/.claude/settings.json  # or use your preferred editor
+
+# Windows (PowerShell)
+New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" -Force
+notepad "$env:USERPROFILE\.claude\settings.json"
+```
+
+**Benefits:**
+- ✅ Works on Windows, Mac, and Linux
+- ✅ Configure once, works for all projects
+- ✅ No risk of committing keys to version control
+- ✅ Claude IDE automatically uses this configuration
+
+**Note:** After configuring, restart Claude IDE if it's already running. This configuration applies globally and will be used for all your Claude IDE projects.
 
 ---
 
