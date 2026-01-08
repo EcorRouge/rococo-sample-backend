@@ -3,7 +3,8 @@ from common.repositories import (
     OrganizationRepository,
     EmailRepository,
     LoginMethodRepository,
-    PersonOrganizationRoleRepository
+    PersonOrganizationRoleRepository,
+    TaskRepository
 )
 from enum import Enum, auto
 from rococo.data.postgresql import PostgreSQLAdapter
@@ -62,12 +63,13 @@ class RepoType(Enum):
     def _generate_next_value_(name, start, count, last_values):
         """Method for auto-generating Enum values"""
         return name.lower()
-    
+
     PERSON = auto()
     ORGANIZATION = auto()
     EMAIL = auto()
     LOGIN_METHOD = auto()
     PERSON_ORGANIZATION_ROLE = auto()
+    TASK = auto()
 
 
 class RepositoryFactory:
@@ -80,7 +82,8 @@ class RepositoryFactory:
         RepoType.ORGANIZATION: OrganizationRepository,
         RepoType.EMAIL: EmailRepository,
         RepoType.LOGIN_METHOD: LoginMethodRepository,
-        RepoType.PERSON_ORGANIZATION_ROLE: PersonOrganizationRoleRepository
+        RepoType.PERSON_ORGANIZATION_ROLE: PersonOrganizationRoleRepository,
+        RepoType.TASK: TaskRepository
     }
 
     def get_db_connection(self):

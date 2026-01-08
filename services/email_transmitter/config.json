@@ -20,6 +20,27 @@
             "id": {
                 "mailjet": 4781139
             }
+        },
+        "TASK_CREATED": {
+            "subject": "New Task: {{var:task_title}}",
+            "templateName": "Task Created",
+            "id": {
+                "mailjet": 0
+            }
+        },
+        "TASK_COMPLETED": {
+            "subject": "Task Completed: {{var:task_title}}",
+            "templateName": "Task Completed",
+            "id": {
+                "mailjet": 0
+            }
+        },
+        "TASK_DELETED": {
+            "subject": "Task Deleted: {{var:task_title}}",
+            "templateName": "Task Deleted",
+            "id": {
+                "mailjet": 0
+            }
         }
     }
 }
