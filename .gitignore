@@ -176,3 +176,8 @@ cython_debug/
 
 .env.secrets
 logs/
+specs/
+agents/
+trees/
+uv.lock
+**/uv.lock
