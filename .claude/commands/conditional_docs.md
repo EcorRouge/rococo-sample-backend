@@ -24,36 +24,16 @@ This prompt helps you determine what documentation you should read based on the 
     - When troubleshooting service startup or connectivity issues
     - When modifying service ports or environment variables
 
-- ADW_IMPLEMENTATION_SUMMARY.md
-  - Conditions:
-    - When understanding the ADW system architecture
-    - When working with ADW workflows or modules
-    - When troubleshooting ADW-related issues
-
 - adws/README.md
   - Conditions:
     - When operating in the `adws/` directory
     - When working with ADW workflows (`adw_plan_iso.py`, `adw_build_iso.py`, `adw_test_iso.py`)
     - When setting up or configuring ADW system
     - When understanding ADW workflow execution
-
-- adws/ENVIRONMENT_VARIABLES.md
-  - Conditions:
-    - When setting up ADW environment
+    - When setting up ADW environment variables
     - When configuring SonarQube, GitHub, or Anthropic API integration
     - When troubleshooting ADW authentication or API connection issues
-
-- adws/SONARQUBE_INTEGRATION.md
-  - Conditions:
-    - When working with SonarQube API integration
-    - When fetching code coverage data
-    - When troubleshooting SonarQube connection or coverage reporting
-
-- adws/AGENTS_FOLDER_EXPLANATION.md
-  - Conditions:
-    - When understanding ADW state persistence
-    - When debugging ADW workflow execution
-    - When working with agent state files
+    - When working with SonarQube API integration or fetching code coverage data
 
 - flask/pyproject.toml
   - Conditions:

@@ -21,19 +21,24 @@ Execute the test suite and report results.
 
 ## Execution Command
 
-For all tests:
+For all tests with full coverage:
 ```bash
-PYTHONPATH=.:common:flask uv run pytest tests/ -v
+PYTHONPATH=.:common:flask pytest tests/ \
+  --cov \
+  --cov-report=term-missing \
+  --cov-report=term \
+  --cov-branch \
+  -v
 ```
 
 For specific test file:
 ```bash
-PYTHONPATH=.:common:flask uv run pytest <test_path> -v
+PYTHONPATH=.:common:flask pytest <test_path> -v
 ```
 
 For specific test function:
 ```bash
-PYTHONPATH=.:common:flask uv run pytest <test_path>::<test_function> -v
+PYTHONPATH=.:common:flask pytest <test_path>::<test_function> -v
 ```
 
 ## Output Format
@@ -48,9 +53,9 @@ Return a summary of test execution results:
 
 ## Guidelines
 
-- Use `uv run pytest` to ensure dependencies are available
 - Set PYTHONPATH to include `.`, `common`, and `flask` directories
 - Use `-v` flag for verbose output
+- Include coverage reporting with `--cov`, `--cov-report`, and `--cov-branch` flags
 - Report any test failures with clear error messages
 - If tests fail, suggest using `/resolve_failed_test` command to fix them
 

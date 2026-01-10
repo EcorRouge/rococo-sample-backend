@@ -52,7 +52,7 @@ class TestLoginRequired:
 
         @login_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
@@ -77,7 +77,7 @@ class TestLoginRequired:
 
         @login_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
@@ -102,7 +102,7 @@ class TestLoginRequired:
 
         @login_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator aborts before this
 
         mock_self = MagicMock()
         test_func(mock_self)
@@ -193,7 +193,7 @@ class TestOrganizationRequired:
 
         @organization_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
@@ -217,10 +217,14 @@ class TestOrganizationRequired:
                 return None
             return default
 
+        # Ensure both branches are covered
+        assert mock_getattr(None, 'person') is None
+        assert mock_getattr(None, 'other', 'default_value') == 'default_value'
+
         with patch('app.helpers.decorators.getattr', mock_getattr):
             @organization_required()
             def test_func(self):
-                return "success"
+                pass  # pragma: no cover - decorator raises before this
 
             mock_self = MagicMock()
             with pytest.raises(RuntimeError) as exc_info:
@@ -251,7 +255,7 @@ class TestOrganizationRequired:
 
         @organization_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
@@ -289,7 +293,7 @@ class TestOrganizationRequired:
 
         @organization_required()
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
@@ -330,12 +334,48 @@ class TestOrganizationRequired:
 
         @organization_required(with_roles=['admin', 'owner'])
         def test_func(self):
-            return "success"
+            pass  # pragma: no cover - decorator returns before this
 
         mock_self = MagicMock()
         result = test_func(mock_self)
 
         assert result == "role unauthorized error"
+
+    @patch('app.helpers.decorators.OrganizationService')
+    @patch('app.helpers.decorators.PersonOrganizationRoleService')
+    @patch('app.helpers.decorators.request')
+    @patch('app.helpers.decorators.g')
+    @patch('app.helpers.decorators.config')
+    def test_organization_required_with_roles_authorized(
+        self, mock_config, mock_g, mock_request, mock_por_service, mock_org_service
+    ):
+        """Test organization_required when user has authorized role."""
+        from app.helpers.decorators import organization_required
+
+        mock_person = MagicMock()
+        mock_person.entity_id = 'person-123'
+        mock_g.person = mock_person
+        type(mock_g).person = PropertyMock(return_value=mock_person)
+
+        mock_request.headers = {'x-organization-id': 'org-123'}
+
+        mock_org = MagicMock()
+        mock_org.entity_id = 'org-123'
+        mock_org_service.return_value.get_organization_by_id.return_value = mock_org
+
+        mock_role = MagicMock()
+        mock_role.role = 'admin'  # User has admin role
+        mock_por_service.return_value.get_role_of_person_in_organization.return_value = mock_role
+
+        @organization_required(with_roles=['admin', 'owner'])  # admin is in the allowed list
+        def test_func(self):
+            return "success"
+
+        mock_self = MagicMock()
+        result = test_func(mock_self)
+
+        # Should succeed because user has 'admin' role which is in with_roles
+        assert result == "success"
 
     @patch('app.helpers.decorators.OrganizationService')
     @patch('app.helpers.decorators.PersonOrganizationRoleService')
