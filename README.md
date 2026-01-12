@@ -1,65 +1,21 @@
 # rococo-sample-backend
-A rococo-based backend for web apps
+A rococo-based backend for web apps with integrated AI development capabilities.
 
----
+## Quick Start
 
-## Prerequisites
+### 1. Configure Claude API Key
 
-* Claude Code must be installed. Refer to the [Claude Code setup guide](https://code.claude.com/docs/en/setup) for installation instructions.
-
----
-
-## Claude IDE Configuration
-
-### Setting Up Anthropic API Key
-
-To use Claude IDE features, configure your Anthropic API key in your **user profile directory** (not in the project). This avoids committing keys to the repository and works across all projects.
-
-**Step 1: Create or edit `~/.claude/settings.json`** in your home directory:
-
-- **macOS/Linux**: `~/.claude/settings.json` (e.g., `/Users/YourUsername/.claude/settings.json`)
-- **Windows**: `%USERPROFILE%\.claude\settings.json` (e.g., `C:\Users\YourUsername\.claude\settings.json`)
-
-**Step 2: Add this configuration** (replace with your actual API key):
+Create `~/.claude/settings.json` in your home directory:
 
 ```json
 {
-  "apiKeyHelper": "echo sk-ant-your-actual-anthropic-api-key-here"
+  "apiKeyHelper": "echo your-actual-anthropic-api-key-here"
 }
 ```
 
-**Example:**
-```json
-{
-  "apiKeyHelper": "echo sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}
-```
+### 2. Getting Started
 
-**Quick Setup Commands:**
-
-```bash
-# macOS/Linux
-mkdir -p ~/.claude
-nano ~/.claude/settings.json  # or use your preferred editor
-
-# Windows (PowerShell)
-New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" -Force
-notepad "$env:USERPROFILE\.claude\settings.json"
-```
-
-**Benefits:**
-- ✅ Works on Windows, Mac, and Linux
-- ✅ Configure once, works for all projects
-- ✅ No risk of committing keys to version control
-- ✅ Claude IDE automatically uses this configuration
-
-**Note:** After configuring, restart Claude IDE if it's already running. This configuration applies globally and will be used for all your Claude IDE projects.
-
----
-
-## Getting Started
-
-### 1. Start Claude Code
+**1. Start Claude Code**
 
 Type the following in your project terminal:
 
@@ -67,9 +23,7 @@ Type the following in your project terminal:
 claude
 ```
 
----
-
-### 2. Install dependencies
+**2. Install dependencies**
 
 Inside Claude Code, run:
 
@@ -77,38 +31,92 @@ Inside Claude Code, run:
 /install
 ```
 
----
-
-### 3. Start services
+**3. Start services**
 
 ```
 /start
 ```
 
----
-
-### 4. Run tests
+**4. Run tests**
 
 ```
 /run_tests
 ```
 
----
+## Claude Commands
 
-## Available Commands
+Use these commands **in your IDE terminal with Claude** (works with any IDE):
 
+| Command | Description |
+|---------|-------------|
+| `/install` | Install all project dependencies |
+| `/start` | Start Docker services |
+| `/run_tests` | Run test suite with coverage |
+| `/feature <description>` | Plan and implement new features |
+| `/bug <description>` | Fix bugs with AI assistance |
+| `/chore <description>` | Handle chores and maintenance tasks |
+| `/test` | Generate tests for uncovered code |
+| `/review` | Review code changes |
+| `/resolve_failed_test` | Fix failing tests |
+| `/document <adw_id>` | Generate feature documentation |
+
+## ADW (AI Developer Workflow) System
+
+ADW automates complete development workflows using isolated git worktrees.
+
+### Quick Setup
+
+**1. Set Environment Variables**
+
+Create `.env` file in `adws/` directory:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+SONARQUBE_URL=https://sonarqube.ecortest.com
+SONARQUBE_TOKEN=squ_...
+SONARQUBE_PROJECT_KEY=rococo-sample-backend  
+GITHUB_PAT=ghp_...
+CLAUDE_CODE_PATH=claude
 ```
-/install     - Install all dependencies
-/start       - Start Docker services
-/run_tests   - Execute test suite
-/test        - Generate tests for uncovered code
-/feature     - Development workflow
-/bug         - Development workflow
-/chore       - Development workflow
-/review      - Code review
-/implement   - Code implementation
+
+**2. Install Dependencies**
+
+```bash
+# Using python (recommended)
+pip install -e ".[adw]"
+
+# Using uv (alternative)
+uv pip install -e ".[adw]"
 ```
 
-Type the command in Claude Code chat to use it.
+**3. Run Workflow**
 
----
+```bash
+# Using python
+python adws/adw_plan_build_test_iso.py <issue-number>
+
+# Using uv (alternative)
+uv run --extra adw adws/adw_plan_build_test_iso.py <issue-number>
+```
+
+**For detailed ADW documentation, see [adws/README.md](adws/README.md)**
+
+### Key Features
+
+- Isolated git worktrees (`trees/<adw_id>/`)
+- Support for concurrent instances
+- Automated PR creation
+- GitHub webhook integration
+
+## Testing
+
+**Run tests:**
+```bash
+# With Claude in your IDE
+/run_tests
+
+# From terminal
+PYTHONPATH=.:common:flask pytest tests/ --cov --cov-report=term-missing --cov-branch -v
+```
+
+Test environment variables are automatically configured in `tests/conftest.py`. No manual setup required.

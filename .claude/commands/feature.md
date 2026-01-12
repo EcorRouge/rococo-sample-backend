@@ -103,7 +103,9 @@ Execute every command to validate the feature works correctly with zero regressi
 - `pytest tests/ -v` - Run tests to validate the feature works with zero regressions
 
 ## Notes
-<optionally list any additional notes, future considerations, or context that are relevant to the feature that will be helpful to the developer>## Feature
+<optionally list any additional notes, future considerations, or context that are relevant to the feature that will be helpful to the developer>
+
+## Feature
 Extract the feature details from the `issue_json` variable (parse the JSON and use the title and body fields).
 
 ## Report
